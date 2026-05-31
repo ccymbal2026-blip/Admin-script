@@ -1,0 +1,68 @@
+-- ServerScriptService
+
+local ADMIN_USERNAME = "Grim09096"
+
+local BannedUsers = {}
+
+game.Players.PlayerAdded:Connect(function(player)
+
+	-- Check bans
+	if BannedUsers[player.UserId] then
+		player:Kick("Get hacked noob")
+		return
+	end
+
+	-- Admin commands
+	if player.Name == ADMIN_USERNAME then
+		player.Chatted:Connect(function(message)
+			local args = string.split(message, " ")
+
+			-- !kick PlayerName
+			if args[1] == "!kick" and args[2] then
+				local target = game.Players:FindFirstChild(args[2])
+				if target then
+					target:Kick("Kicked by admin.")
+				end
+			end
+
+			-- !ban PlayerName
+			if args[1] == "!ban" and args[2] then
+				local target = game.Players:FindFirstChild(args[2])
+				if target then
+					BannedUsers[target.UserId] = true
+					target:Kick("Get hacked noob")
+				end
+			end
+
+			-- !unban UserId
+			if args[1] == "!unban" and args[2] then
+				local userId = tonumber(args[2])
+				if userId then
+					BannedUsers[userId] = nil
+				end
+			end
+
+			-- !speed Number
+			if args[1] == "!speed" and args[2] then
+				local speed = tonumber(args[2])
+				if speed and player.Character then
+					local hum = player.Character:FindFirstChild("Humanoid")
+					if hum then
+						hum.WalkSpeed = speed
+					end
+				end
+			end
+
+			-- !jump Number
+			if args[1] == "!jump" and args[2] then
+				local jump = tonumber(args[2])
+				if jump and player.Character then
+					local hum = player.Character:FindFirstChild("Humanoid")
+					if hum then
+						hum.JumpPower = jump
+					end
+				end
+			end
+		end)
+	end
+end)
